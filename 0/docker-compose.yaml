@@ -1,0 +1,42 @@
+version: '2'
+services:
+  cititsm:
+    image: hub.docker.planejamento.gov.br/citsmart/citsmart-itsm:v7.0.7.31
+    hostname: citsmart
+    environment:
+      DBBASE: ${DBBASE}
+      EVMON: '${EVMON}'
+      INVON: '${INVON}'
+      IPDB: ${IPDB}
+      PASSDB: ${PASSDB}
+      USERDB: ${USERDB}
+    stdin_open: true
+    tty: true
+    links:
+    - mongodb:mongodb
+    - mongodb:mongodb
+    labels:
+      io.rancher.container.pull_image: always
+  mongodb:
+    image: hub.docker.planejamento.gov.br/citsmart/citsmart-mongodb:v3.4.9
+    hostname: mongodb
+    stdin_open: true
+    tty: true
+    ports:
+    - 27017:27017/tcp
+    labels:
+      io.rancher.container.pull_image: always
+  citsolr:
+    image: hub.docker.planejamento.gov.br/citsmart/citsmart-solr:v7.0.1
+    hostname: solr
+    environment:
+      IPDB: ${IPDB}
+      DBBASE: ${DBBASE}
+      USERDB: ${USERDB}
+      PASSDB: ${PASSDB}
+    stdin_open: true
+    tty: true
+    links:
+    - cititsm:cititsm
+    labels:
+      io.rancher.container.pull_image: always

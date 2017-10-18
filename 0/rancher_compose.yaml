@@ -1,0 +1,100 @@
+version: '2'
+catalog:
+  name: "CITSmart Enviroment"
+  version: "v7.0.7.31"
+  description: "CITSmart - Versão 7.0.7.31"
+  minimum_rancher_version: v1.5.6
+  questions:
+    - variable: "DBBASE"
+      description: "Database CITSmart"
+      label: "Database CITSmart"
+      required: true
+      default: "citsmart"
+      type: "string"
+
+    - variable: "IPDB"
+      description: "Host IP or Hostname from database"
+      label: "IP or Hostname"
+      required: true
+      default: "postgres"
+      type: "int"
+      
+    - variable: "PASSDB"
+      description: "Database Password to use for the server"
+      label: "DB Password"
+      required: true
+      default: "citsmart"
+      type: "string"
+
+    - variable: "USERDB"
+      description: "Database User to use for the server"
+      label: "DB User"
+      required: true
+      default: "citsmart"
+      type: "string"
+
+    - variable: "EVMON"
+      description: "CITSmart EVM activation"
+      label: "true or false"
+      required: true
+      default: "false"
+      type: "enum"
+      options:
+        - "true"
+        - "false"
+
+    - variable: "INVON"
+      description: "CITSmart INV activation"
+      label: "true or false"
+      required: true
+      default: "false"
+      type: "enum"
+      options:
+        - "true"
+        - "false"
+
+version: '2'
+services:
+  LB:
+    scale: 1
+    start_on_create: true
+    lb_config:
+      certs: []
+      port_rules:
+      - hostname: itsm
+        path: /citsmart
+        priority: 1
+        protocol: http
+        service: cititsm
+        source_port: 80
+        target_port: 8080
+      - hostname: solr
+        path: /solr
+        priority: 2
+        protocol: http
+        service: citsolr
+        source_port: 80
+        target_port: 8983
+      stickiness_policy:
+        cookie: citsmart
+        indirect: false
+        mode: insert
+        nocache: false
+        postonly: false
+    health_check:
+      response_timeout: 2000
+      healthy_threshold: 2
+      port: 42
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      reinitializing_timeout: 60000
+  cititsm:
+    scale: 2
+    start_on_create: true
+  mongodb:
+    scale: 1
+    start_on_create: true
+  citsolr:
+    scale: 1
+    start_on_create: true  
