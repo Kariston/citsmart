@@ -1,8 +1,8 @@
-name: CITSmart Enterprise 7
+name: CITSmart
 description: |
-  CITSmart Enterprise
+  CITSmart
 version: v7.0.7.31
 category: ITSM
-maintainer: kariston.sugimoto@citsmart.com
+maintainer: kariston.sugimoto@citsmart.com.br
 license: BSD
-projectURL: https://git.planejamento.gov.br/00428968198/citsmart
+projectURL: https://github.com/Kariston/citsmart 
